@@ -1,0 +1,65 @@
+# Main application configuration
+server:
+  port: 8080
+  servlet:
+    context-path: /api/aggregated
+
+spring:
+  application:
+    name: real-time-data-aggregation
+  
+  # Database configuration
+  datasource:
+    url: jdbc:postgresql://localhost:5432/voting_aggregation
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: password
+  
+  # JPA/Hibernate configuration
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: false
+  
+  # Kafka configuration
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: aggregation-consumer-group
+      topic: preprocessed-data-queue
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: ai.shreds.shared.dtos
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+# Security configuration
+security:
+  enabled: true
+
+# Management endpoints for monitoring
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,metrics,prometheus
+  endpoint:
+    health:
+      show-details: always
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+
+# Logging configuration
+logging:
+  level:
+    root: INFO
+    ai.shreds: INFO
+    org.springframework: WARN

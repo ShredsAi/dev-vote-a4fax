@@ -1,0 +1,46 @@
+# Development profile configuration
+spring:
+  # Development database configuration
+  datasource:
+    url: jdbc:postgresql://localhost:5432/voting_aggregation_dev
+    username: dev_user
+    password: dev_password
+  
+  # JPA configuration for development
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+  
+  # Kafka configuration for development
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      properties:
+        spring.json.add.type.headers: false
+        spring.json.type.mapping: preprocessedData:ai.shreds.shared.dtos.SharedPreprocessedDataDTO
+
+# Development logging configuration
+logging:
+  level:
+    ai.shreds.aggregation: DEBUG
+    org.springframework: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    org.springframework.kafka: DEBUG
+    root: DEBUG
+  pattern:
+    console: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+
+# Development management endpoints
+management:
+  endpoint:
+    health:
+      show-details: always
+    beans:
+      enabled: true
+    env:
+      enabled: true
